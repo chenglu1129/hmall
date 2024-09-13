@@ -1,0 +1,26 @@
+# Editor directories and files
+.idea/*
+!.idea/icon.png
+**/*.iml
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.mvn
+!.mvn/maven-wrapper.properties
+
+src/main/resources/static
+src/main/resources/templates
+target
+.settings
+.project
+.classpath
+.jython_cache
+qywx.json
+
+# local env files
+.env.local
+.env.*.local
+.history/
