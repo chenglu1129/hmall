@@ -99,6 +99,7 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements IC
         // 1.获取商品id
         Set<Long> itemIds = vos.stream().map(CartVO::getItemId).collect(Collectors.toSet());
         // 2.查询商品
+        /**
 //        2.1根据服务名称获取实例列表
 //        List<ServiceInstance> instances = discoveryClient.getInstances("item-service");
 //        if(CollUtil.isEmpty(instances)){
@@ -122,6 +123,7 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements IC
 //            return;
 //        }
 //        List<ItemDTO> items = response.getBody();
+         */
         List<ItemDTO> items = itemClient.queryItemByIds(itemIds);
         if (CollUtils.isEmpty(items)) {
             return;
