@@ -5,6 +5,7 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.hmall.cart.client.ItemClient;
 import com.hmall.cart.domain.dto.CartFormDTO;
 import com.hmall.cart.domain.dto.ItemDTO;
 import com.hmall.cart.domain.po.Cart;
@@ -45,10 +46,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements ICartService {
 
-    private final RestTemplate restTemplate;
-
-    private final DiscoveryClient discoveryClient;
+    //    private final RestTemplate restTemplate;
+//
+//    private final DiscoveryClient discoveryClient;
 //    private final IItemService itemService;
+    private final ItemClient itemClient;
 
     @Override
     public void addItem2Cart(CartFormDTO cartFormDTO) {
@@ -56,7 +58,7 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements IC
         Long userId = UserContext.getUser();
 
         // 2.判断是否已经存在
-        if(checkItemExists(cartFormDTO.getItemId(), userId)){
+        if (checkItemExists(cartFormDTO.getItemId(), userId)) {
             // 2.1.存在，则更新数量
             baseMapper.updateNum(cartFormDTO.getItemId(), userId);
             return;
@@ -97,29 +99,30 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements IC
         // 1.获取商品id
         Set<Long> itemIds = vos.stream().map(CartVO::getItemId).collect(Collectors.toSet());
         // 2.查询商品
-        //2.1根据服务名称获取实例列表
-        List<ServiceInstance> instances = discoveryClient.getInstances("item-service");
-        if(CollUtil.isEmpty(instances)){
-            return;
-        }
-        //2.2手写负载均衡，从实例列表中选择一个实例
-        ServiceInstance instance = instances.get(RandomUtil.randomInt(0,instances.size()));
-//        List<ItemDTO> items = itemService.queryItemByIds(itemIds);
-        //2.3使用RestTemplate发起http请求，得到http响应
-        ResponseEntity<List<ItemDTO>> response = restTemplate.exchange(
-                instance.getUri() + "/items?ids={ids}",
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<List<ItemDTO>>() {
-                },
-                Map.of("ids", CollUtil.join(itemIds, ","))
-        );
-        //2.2 解析响应
-        if(!response.getStatusCode().is2xxSuccessful()){
-            //查询失败，直接结束
-            return;
-        }
-        List<ItemDTO> items = response.getBody();
+//        2.1根据服务名称获取实例列表
+//        List<ServiceInstance> instances = discoveryClient.getInstances("item-service");
+//        if(CollUtil.isEmpty(instances)){
+//            return;
+//        }
+//        //2.2手写负载均衡，从实例列表中选择一个实例
+//        ServiceInstance instance = instances.get(RandomUtil.randomInt(0,instances.size()));
+////        List<ItemDTO> items = itemService.queryItemByIds(itemIds);
+//        //2.3使用RestTemplate发起http请求，得到http响应
+//        ResponseEntity<List<ItemDTO>> response = restTemplate.exchange(
+//                instance.getUri() + "/items?ids={ids}",
+//                HttpMethod.GET,
+//                null,
+//                new ParameterizedTypeReference<List<ItemDTO>>() {
+//                },
+//                Map.of("ids", CollUtil.join(itemIds, ","))
+//        );
+//        //2.2 解析响应
+//        if(!response.getStatusCode().is2xxSuccessful()){
+//            //查询失败，直接结束
+//            return;
+//        }
+//        List<ItemDTO> items = response.getBody();
+        List<ItemDTO> items = itemClient.queryItemByIds(itemIds);
         if (CollUtils.isEmpty(items)) {
             return;
         }
