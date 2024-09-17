@@ -1,0 +1,42 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: gateway
+  cloud:
+    nacos:
+      server-addr: 192.168.240.100:8848
+    gateway:
+      routes: # 路由配置
+        - id: item_service
+          uri: lb://item-service
+          predicates:
+            - Path=/items/**,/search/**
+        - id: trade_service
+          uri: lb://trade-service
+          predicates:
+            - Path=/orders/**
+        - id: pay_service
+          uri: lb://pay-service
+          predicates:
+            - Path=/pays/**
+        - id: user_service
+          uri: lb://user-service
+          predicates:
+            - Path=/users/**,/addresses/**
+        - id: cart_service
+          uri: lb://cart-service
+          predicates:
+            - Path=/carts/**
+hm:
+  jwt:
+    location: classpath:hmall.jks
+    alias: hmall
+    password: hmall123
+    tokenTTL: 30m
+  auth:
+    excludePaths:
+      - /search/**
+      - /users/login
+      - /items/**
+      - /hi
