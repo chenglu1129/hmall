@@ -4,7 +4,6 @@ import com.hmall.common.exception.BizIllegalException;
 import com.hmall.common.utils.BeanUtils;
 import com.hmall.pay.domain.dto.PayApplyDTO;
 import com.hmall.pay.domain.dto.PayOrderFormDTO;
-import com.hmall.pay.domain.po.PayOrder;
 import com.hmall.pay.domain.vo.PayOrderVO;
 import com.hmall.pay.enums.PayType;
 import com.hmall.pay.service.IPayOrderService;

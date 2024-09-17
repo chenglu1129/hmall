@@ -8,23 +8,23 @@ spring:
       server-addr: 192.168.240.100:8848
     gateway:
       routes: # 路由配置
-        - id: item_service
+        - id: item-service
           uri: lb://item-service
           predicates:
             - Path=/items/**,/search/**
-        - id: trade_service
+        - id: trade-service
           uri: lb://trade-service
           predicates:
             - Path=/orders/**
-        - id: pay_service
+        - id: pay-service
           uri: lb://pay-service
           predicates:
-            - Path=/pays/**
-        - id: user_service
+            - Path=/pay-orders/**
+        - id: user-service
           uri: lb://user-service
           predicates:
             - Path=/users/**,/addresses/**
-        - id: cart_service
+        - id: cart-service
           uri: lb://cart-service
           predicates:
             - Path=/carts/**

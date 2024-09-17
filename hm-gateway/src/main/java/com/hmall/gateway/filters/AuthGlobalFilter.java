@@ -41,7 +41,7 @@ public class AuthGlobalFilter implements GlobalFilter, Ordered {
         // 3.获取token
         String token = null;
         List<String> headers = request.getHeaders().get("authorization");
-        if (headers == null || headers.isEmpty()) {
+        if (headers != null && headers.size() > 0) {
             token = headers.get(0);
         }
         // 4.校验并解析token
@@ -54,7 +54,11 @@ public class AuthGlobalFilter implements GlobalFilter, Ordered {
             response.setStatusCode(HttpStatus.UNAUTHORIZED);
             return response.setComplete();
         }
-        // TODO 5.传递用户信息
+        // 5.传递用户信息
+        String userInfo = userId.toString();
+        ServerWebExchange swe = exchange.mutate()
+                .request(builder -> builder.header("user-info", userInfo))
+                .build();
         System.out.println("userId=" + userId);
         // 6.放行
         return chain.filter(exchange);
